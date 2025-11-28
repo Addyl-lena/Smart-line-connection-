@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>WiFi Login</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="card">
+        <h3>Buy WiFi Access</h3>
+
+  <!-- MikroTik hotspot variables: $(mac) and $(ip) are replaced by router -->
+  <input type="hidden" id="mac" value="$(mac)">
+  <input type="hidden" id="ip" value="$(ip)">
+
+  <label>Phone (e.g. 2547XXXXXXXX):</label><br>
+  <input type="text" id="phone" placeholder="2547XXXXXXXX" /><br><br>
+
+  <label>Package:</label><br>
+  <select id="amount">
+    <option value="10">70 minutes - 10 KES</option>
+    <option value="19">130 minutes - 19 KES</option>
+    <option value="49">12 hours - 49 KES</option>
+    <option value="1000">1 month - 1000KES</option>
+    <option value="499">2 weeks - 499 KES</option>
+  </select><br><br>
+
+  <button id="payBtn">Pay with M-Pesa</button>
+
+  <div id="status"></div>
+
+    </div>
+  
+
+<script>
+document.getElementById('payBtn').addEventListener('click', async function () {
+  const phone = document.getElementById('phone').value.trim();
+  const amount = document.getElementById('amount').value;
+  const mac = document.getElementById('mac').value;
+  const ip = document.getElementById('ip').value;
+
+  if (!phone || !mac) {
+    document.getElementById('status').innerText = "Phone number is missing";
+    return;
+  }
+
+  document.getElementById('status').innerText = "Initiating payment...";
+
+  try {
+    // use full ngrok HTTPS URL
+    const res = await fetch('https://spinier-candance-prophetically.ngrok-free.dev/pay', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ phone, amount, mac, ip })
+    });
+
+    // handle network errors properly
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({ message: "Unknown error" }));
+      document.getElementById('status').innerText = "Error: " + JSON.stringify(errorData);
+      return;
+    }
+
+    const data = await res.json();
+    document.getElementById('status').innerText = "STK push sent — check your phone.";
+    console.log("STK Response:", data);
+
+  } catch (e) {
+    console.error(e);
+    document.getElementById('status').innerText = "Network error: " + e.message;
+  }
+});
+
+</script>
+
+</body>
+</html>

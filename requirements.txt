@@ -1,0 +1,7 @@
+Flask
+Flask-Cors
+python-dotenv
+requests
+redis
+routeros-api
+gunicorn
