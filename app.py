@@ -18,8 +18,8 @@ load_dotenv()
 
 # ------------------ Config (from env) ------------------
 # M-PESA (Daraja)
-CONSUMER_KEY = os.getenv("CONSUMER_KEY")
-CONSUMER_SECRET = os.getenv("CONSUMER_SECRET")
+CONSUMER_KEY = os.getenv("qefnp4VWYkkrEtuZRqa5RnWOSSGNJD6dQ5yQ80EnQeVMfBkT")
+CONSUMER_SECRET = os.getenv("rWL0xVkxqHu2AmBN1H1UrXR027JtDTq3rS0uYRwxf73peAkz7khXgZtJjIsAg6aI")
 BUSINESS_SHORTCODE = os.getenv("BUSINESS_SHORTCODE", "8427910")
 PASSKEY = os.getenv("PASSKEY")
 # Use sandbox by default:
@@ -58,7 +58,7 @@ r = redis.from_url(REDIS_URL, decode_responses=True)
 def get_access_token():
     """Get Daraja access token."""
     try:
-        res = requests.get(OAUTH_URL, auth=(CONSUMER_KEY, CONSUMER_SECRET), timeout=10)
+        res = requests.get(OAUTH_URL, auth=(CONSUMER_KEY, CONSUMER_KEY, timeout=10)
         res.raise_for_status()
         return res.json().get("access_token")
     except Exception as e:
@@ -283,3 +283,4 @@ def mpesa_callback():
 
 if __name__ == "__main__":
     app.run(host=APP_HOST, port=APP_PORT, debug=DEBUG)
+
